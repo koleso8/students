@@ -50,11 +50,7 @@ export const loginUser = async payload => {
     throw createHttpError(401, 'Unauthorized password');
   }
 
-  const deleteSesion = await SessionsCollection.deleteOne({ userId: user._id });
-
-  console.log(deleteSesion);
-  console.log(user._id);
-  console.log(deleteSesion);
+  await SessionsCollection.deleteOne({ userId: user._id });
 
   const newSession = createSession();
   return await SessionsCollection.create({
