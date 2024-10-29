@@ -2,8 +2,6 @@ import { ONE_DAY } from '../constants/index.js';
 import * as services from '../services/auth.js';
 
 const setupSession = (res, session) => {
-  console.log(session);
-
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),

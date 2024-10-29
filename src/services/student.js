@@ -56,8 +56,6 @@ export const getStudentById = async studentId => {
 };
 
 export const createStudent = async payload => {
-  console.log(payload);
-
   const student = await StudentsCollection.create(payload);
   return student;
 };

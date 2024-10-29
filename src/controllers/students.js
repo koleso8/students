@@ -3,6 +3,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getStudentsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -23,7 +24,6 @@ export const getStudentsController = async (req, res) => {
 
 export const getStudentByIdController = async (req, res, next) => {
   const { studentsId } = req.params;
-  console.log(req.params);
 
   const student = await services.getStudentById(studentsId);
 
@@ -49,7 +49,6 @@ export const createStudentController = async (req, res) => {
 
 export const deleteStudentsController = async (req, res, next) => {
   const { studentsId } = req.params;
-  console.log(req.params);
 
   const student = await services.deleteStudent(studentsId);
 
@@ -83,7 +82,17 @@ export const upsertStudentController = async (req, res, next) => {
 
 export const patchStudentController = async (req, res, next) => {
   const { studentId } = req.params;
-  const result = await services.updateStudent(studentId, req.body);
+  const photo = req.file;
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
+  const result = await services.updateStudent(studentId, {
+    ...req.body,
+    photo: photoUrl,
+  });
 
   if (!result) {
     next(createHttpError(404, 'Student not found'));
