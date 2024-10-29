@@ -42,10 +42,14 @@ export const getStudentByIdController = async (req, res, next) => {
 export const createStudentController = async (req, res) => {
   const photo = req.file;
   let photoUrl;
-  if (photo) {
-    photoUrl = await saveFileToUploadDir(photo);
-  }
 
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
   const student = await services.createStudent({
     ...req.body,
     photo: photoUrl,
@@ -72,10 +76,24 @@ export const deleteStudentsController = async (req, res, next) => {
 
 export const upsertStudentController = async (req, res, next) => {
   const { studentId } = req.params;
+  const photo = req.file;
+  let photoUrl;
 
-  const result = await services.updateStudent(studentId, req.body, {
-    upsert: true,
-  });
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const result = await services.updateStudent(
+    studentId,
+    { ...req.body, photoUrl },
+    {
+      upsert: true,
+    }
+  );
 
   if (!result) {
     next(createHttpError(404, 'Student not found'));
