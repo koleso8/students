@@ -12,6 +12,12 @@ router.get(
 );
 
 router.post(
+  '/confirm-oauth',
+  validateBody(validation.loginWithGoogleOAuthSchema),
+  ctrlWrapper(controllers.loginWithGoogleController)
+);
+
+router.post(
   '/register',
   validateBody(validation.registerUserSchema),
   ctrlWrapper(controllers.registerUserController)
