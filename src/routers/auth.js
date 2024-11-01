@@ -6,6 +6,11 @@ import * as validation from '../validation/auth.js';
 
 const router = Router();
 
+router.get(
+  '/get-oauth-url',
+  ctrlWrapper(controllers.getGoogleOAuthUrlController)
+);
+
 router.post(
   '/register',
   validateBody(validation.registerUserSchema),
