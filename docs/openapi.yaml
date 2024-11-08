@@ -17,6 +17,11 @@ servers:
   - url: http://localhost:3000
   - url: https://example.com/api/v1
 paths:
+  /students:
+    get:
+      $ref: ../swagger/paths/students/get.yaml
+    post:
+      $ref: ../swagger/paths/students/post.yaml
   /students/{id}:
     get:
       $ref: ../swagger/paths/students/{id}/get.yaml
